@@ -42,10 +42,44 @@ class MH_Parser extends GenParser implements PARSER {
     // may add auxiliary methods here if desired
 
     String[] tableEntry (String nonterm, String tokClass) {
-        // add main code here
+    	System.out.println(nonterm);
+    	System.out.println(tokClass);
+    	if (nonterm.equals("#Prog")) {
+    	    if (tokClass == null) return epsilon ;
+    	    else if (tokClass.equals("#Prog")) return Decl_Prog ;
+    	    else if (tokClass.equals("#Decl")) return TypeDecl_TermDecl ;
+    	    else return null ;
+    	} 
+    	else if (nonterm.equals("#Decl")) {
+    		if (tokClass == null) return epsilon ;
+    		if (tokClass.equals("#TypeDecl")) return VAR_has_Type ;
+    		else if (tokClass.equals("#TermDecl")) return VAR_Args_eq_Exp ;
+    	}
+    	else if (nonterm.equals("#TypeDecl")) {
+    		if (tokClass.equals("VAR :: #Type;")) return 
+    		return new String[] {"hi"};
+    	}
+    	return new String[] {"else else"};
     }
 }
 
+
+//Prog -> e | Decl Prog
+//Decl -> TypeDecl TermDecl
+//TypeDecl -> v :: Type;
+//Type -> Type0 TypeRest
+//TypeRest -> e | Type
+//Type0 -> i | b | (Type)
+//TermDecl -> v Args = Exp;
+//Args -> e | v Args
+//Exp -> Exp0 | if Exp then Exp else Exp
+//Exp0 -> Exp1 Rest0
+//Rest0 -> e | == Exp1 | <= Exp 1
+//Exp1 -> Exp2 Rest1
+//Rest1 -> e | + Exp2 Rest1 | - Exp2 Rest1
+//Exp2 -> Exp3 Rest2
+//Rest2 -> e | Exp3 Rest2
+//Exp3 -> v | n | b | (Exp)
 
 // For testing
 
