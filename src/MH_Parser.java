@@ -52,6 +52,7 @@ class MH_Parser extends GenParser implements PARSER {
     	
 //    	Decl
     	else if (nonterm.equals("#Decl")) {
+    		if (tokClass == null) return epsilon;
     		if (tokClass.equals("VAR")) return TypeDecl_TermDecl ;
     		else return null ;
     	}
@@ -59,7 +60,7 @@ class MH_Parser extends GenParser implements PARSER {
 //    	TypeDecl
     	else if (nonterm.equals("#TypeDecl")) {
     		if (tokClass.equals("VAR")) return VAR_has_Type ;
-    		if (tokClass.equals(";")) return epsilon ;
+//    		if (tokClass.equals(";")) return epsilon ;
     		else return null ;
     	}
     	
@@ -145,8 +146,8 @@ class MH_Parser extends GenParser implements PARSER {
     		if (tokClass.equals("else")) return epsilon ;
     		if (tokClass.equals(")")) return epsilon ;
     		if (tokClass.equals(";")) return epsilon ;
-    		if (tokClass.equals("==")) return eqeq_Exp1 ;
-    		if (tokClass.equals("<=")) return lteq_Exp1 ;
+    		if (tokClass.equals("==")) return epsilon ;
+    		if (tokClass.equals("<=")) return epsilon ;
     		if (tokClass.equals("+")) return plus_Exp2_Rest1 ;
     		if (tokClass.equals("-")) return minus_Exp2_Rest1 ;
     		else return null ;

@@ -1,4 +1,4 @@
-
+// s1621503
 // File:   MH_Typechecker.java
 // Date:   October 2013
 
@@ -23,9 +23,72 @@ class MH_Typechecker {
 
     static MH_TYPE computeType (MH_EXP exp, TYPE_ENV env) 
 	throws TypeError, UnknownVariable {
-
-        // add code here
-
+    	if (exp == null) {
+    		throw new TypeError ("null type!");
+    	}
+    	else if (exp.isVAR()) {
+    		return env.typeOf(exp.value()) ;
+    	}
+    	else if (exp.isNUM()) {
+    		String num = exp.value();
+    		for (char d : num.toCharArray()) {
+    			if (!CharTypes.isDigit(d)) {
+    				throw new TypeError (String.format("incorrect type 'NUM' of '%c' (in '%s')!", d, num));
+    			}
+    		}
+    		return IntegerType;
+    	}
+    	else if (exp.isBOOLEAN()) {
+    		String b = exp.value();
+    		if (!b.equals("True") || !b.equals("False")) {
+    			throw new TypeError(String.format("incorrect type 'BOOLEAN' of '%s'!", b)) ;
+    		}
+    		else return BoolType;
+    	}
+    	else if (exp.isINFIX()) {
+    		MH_TYPE a = computeType(exp.first(), env);
+    		MH_TYPE b = computeType(exp.second(), env);
+    		String op = exp.infixOp();
+//    		(type a) == (type b)
+    		if (!a.equals(b)) {
+    			throw new TypeError(String.format("type mismatch: %s %s %s!", a.toString(), op, b.toString())) ;
+    		}
+    		else if (op.equals("+") || op.equals("-")) {
+				return IntegerType;
+			}
+			else if (op.equals("==") || op.equals("<=")) {
+				return BoolType;
+			}
+    	}
+    	else if (exp.isAPP()) { 
+    		MH_TYPE a = computeType(exp.first(), env);
+    		MH_TYPE b = computeType(exp.second(), env);
+//    		a must be function
+    		if (!a.isFun()) {
+    			throw new TypeError(String.format("not a function '%s'; cannot apply to '%s'!", a.toString(), b.toString())) ;
+    		} //arg type of a should be equal to type of b
+//    		a.left() returns first variable type
+    		else if (!a.left().equals(b)) {
+    			throw new TypeError(String.format("invalid argument '%s'; cannot pass to '%s'!", b.toString(), a.toString())) ;
+    		}
+//    		return expected output type of function
+    		else return a.right();
+    	}
+    	
+    	else if (exp.isIF()) {
+    		MH_TYPE cond = computeType(exp.first(), env);
+    		MH_TYPE b1 = computeType(exp.second(), env);
+    		MH_TYPE b2 = computeType(exp.third(), env);
+    		
+    		if (!cond.isBool()) {
+    			throw new TypeError(String.format("invalid condition type '%s'", cond)) ;
+    		} else if (!b1.equals(b2)) {
+    			throw new TypeError(String.format("invalid comparison types '%s', '%s'", b1, b2)) ;
+    		} else {
+    			return b1;
+    		}
+    	}
+    	throw new TypeError (String.format("unknown '%s'", exp.toString()));
     }
 
 
